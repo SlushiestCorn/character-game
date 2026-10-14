@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+  <meta name="theme-color" content="#101c29"/>
+  <meta name="description" content="A no-cost, two-player mystery-character guessing game"/>
+  <title>Who Am I? — Two Player Game</title>
+  <link rel="stylesheet" href="styles.css"/>
+</head>
+<body>
+  <div class="grain" aria-hidden="true"></div>
+  <main class="shell">
+    <header class="header">
+      <a class="brand" href="./" aria-label="Who Am I home"><span class="brand-icon">?</span><span>WHO <em>AM</em> I<span class="brand-period">.</span></span></a>
+      <span class="header-badge">THE TWO-PLAYER EDITION</span>
+    </header>
+    <div id="notice" class="notice" role="status" aria-live="polite" hidden></div>
+
+    <section id="lobby" class="screen">
+      <div class="hero-head"><span class="eyebrow"><span class="dot"></span> TWO SCREENS. TWO SECRETS. ONE LINK.</span>
+        <h1>Think you know <em>who you are?</em></h1>
+        <p class="subtitle">You can see your opponent's character. They can see yours. Ask yes-or-no questions, follow the shared clue and be first to work it out.</p>
+      </div>
+      <div class="hero-grid">
+        <div class="panel primary-panel">
+          <div class="panel-label">PLAY TOGETHER</div>
+          <h2>Start a game</h2>
+          <p>Create a private room. Share the 6-character join code with the other player.</p>
+          <button id="createBtn" class="btn btn-primary full" type="button"><span>Create game room</span><span aria-hidden="true">↗</span></button>
+          <div class="or"><span>OR JOIN A FRIEND</span></div>
+          <form id="joinForm" class="join-form"><label class="sr-only" for="joinCode">Six-character room code</label><input id="joinCode" maxlength="6" pattern="[A-Za-z0-9]{6}" placeholder="ROOM CODE" autocomplete="off" spellcheck="false"/><button class="btn btn-quiet" type="submit">Join room →</button></form>
+          <p id="configHint" class="tiny-tip"></p>
+        </div>
+        <div class="panel secondary-panel">
+          <div class="panel-label">HOW IT WORKS</div>
+          <div class="how-row"><span class="step">01</span><p>Each phone gets a <strong>different character</strong> to show its owner.</p></div>
+          <div class="how-row"><span class="step">02</span><p>Both players see the <strong>same common link</strong>.</p></div>
+          <div class="how-row"><span class="step">03</span><p>Ask questions aloud. <strong>Never look at your own card.</strong></p></div>
+          <button type="button" id="demoBtn" class="text-link">Try a one-device preview <span aria-hidden="true">→</span></button>
+        </div>
+      </div>
+      <div class="foot-note"><span id="catalogueCount">Loading character catalogue…</span><span>Free to play · No registration · Works on phones</span></div>
+    </section>
+
+    <section id="room" class="screen" hidden>
+      <div class="game-topbar">
+        <div><span class="eyebrow">PRIVATE ROOM</span><h2 class="room-title">ROOM <span id="roomCode">------</span> <button id="copyCodeBtn" class="icon-button" title="Copy join link" aria-label="Copy join link">↗</button></h2></div>
+        <div class="room-right"><span class="status-chip" id="connectionStatus">Connecting</span><button id="leaveBtn" class="btn btn-outline small">Leave room</button></div>
+      </div>
+      <div id="waiting" class="waiting panel" hidden>
+        <div class="waiting-symbol">⌛</div>
+        <h2>Waiting for player two</h2>
+        <p>Send your partner this link, or tell them your room code.</p>
+        <div class="code-giant" id="waitingCode">------</div>
+        <button id="inviteBtn" class="btn btn-primary">Copy invitation link</button>
+        <p class="tiny-tip">Both players must be connected before the first round starts.</p>
+      </div>
+      <div id="gameplay" hidden>
+        <div class="clue-panel">
+          <div class="clue-top"><span class="eyebrow">THE COMMON LINK</span><span class="round-badge" id="roundLabel">ROUND 01</span></div>
+          <h2 id="clueText">Both characters share a secret…</h2>
+          <p class="clue-bottom">This clue applies to both characters. It is not the answer.</p>
+        </div>
+        <div class="play-layout">
+          <div class="character-panel">
+            <div class="character-top"><span class="eyebrow">THEIR CHARACTER — YOUR SECRET</span><span class="confidential">DO NOT SHOW</span></div>
+            <div class="image-wrap"><div id="imageLoading" class="image-placeholder"><span class="placeholder-icon">?</span><span>Finding an image…</span></div><img id="characterImage" alt="" hidden/></div>
+            <div class="character-info"><div id="characterName" class="character-name">Selecting a character…</div><div id="characterWork" class="character-work"> </div></div>
+            <div class="image-tools"><a id="imageSource" href="#" target="_blank" rel="noopener noreferrer">Image / character source ↗</a><button id="replaceImageBtn" class="text-link" type="button">Fix image</button></div>
+          </div>
+          <div class="controls-panel">
+            <div class="player-heading"><span class="eyebrow">GAME STATUS</span><span id="myRole" class="role-pill">Player 1</span></div>
+            <h3 id="statusTitle">Waiting for second player…</h3>
+            <p id="statusDescription" class="muted">The next round will begin shortly.</p>
+            <div class="player-list"><div class="player-row"><span class="player-number">01</span><span>Player 1</span><span id="player1Status" class="player-state">—</span></div><div class="player-row"><span class="player-number">02</span><span>Player 2</span><span id="player2Status" class="player-state">—</span></div></div>
+            <button id="passTurnBtn" class="btn btn-outline full" type="button">Pass the turn ↪</button>
+            <button id="solvedBtn" class="btn btn-outline full" type="button">I guessed my character ✓</button>
+            <hr class="panel-rule"/>
+            <button id="nextRoundBtn" class="btn btn-primary full" type="button">↻ New characters & link</button>
+            <p class="tiny-tip">A new round replaces both character cards. No points are required—play by talking.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="demo" class="screen" hidden>
+      <div class="game-topbar"><div><span class="eyebrow">ONE-DEVICE PREVIEW</span><h2 class="room-title">TRY A ROUND</h2></div><button id="exitDemoBtn" class="btn btn-outline small">Back to lobby</button></div>
+      <div class="clue-panel"><div class="clue-top"><span class="eyebrow">THE COMMON LINK</span><span class="round-badge">DEMO MODE</span></div><h2 id="demoClue">Generating…</h2></div>
+      <div class="demo-grid"><article class="demo-card"><div class="eyebrow">PLAYER 1 SEES</div><div class="demo-image"><img id="demoImage1" alt=""/></div><h3 id="demoName1"></h3><div id="demoWork1" class="muted"></div></article><article class="demo-card"><div class="eyebrow">PLAYER 2 SEES</div><div class="demo-image"><img id="demoImage2" alt=""/></div><h3 id="demoName2"></h3><div id="demoWork2" class="muted"></div></article></div>
+      <button id="demoNextBtn" class="btn btn-primary">↻ Random new pair</button><p class="tiny-tip">Preview intentionally reveals both answers. In a real room each phone only receives its own opponent card.</p>
+    </section>
+
+    <dialog id="imageDialog" class="modal"><form id="imageForm" method="dialog"><div class="modal-title"><h3>Replace this picture</h3><button value="cancel" class="icon-button close" formnovalidate aria-label="Close">×</button></div><p class="muted">Enter a direct image URL (ending in .jpg, .png, .webp, etc.). This override is saved on this device.</p><label for="imageUrlInput">Image URL</label><input id="imageUrlInput" type="url" placeholder="https://example.org/character.jpg"/><a id="findImageLink" target="_blank" rel="noopener noreferrer" href="#">Search for a picture ↗</a><div class="modal-actions"><button id="resetImageBtn" class="btn btn-outline" value="reset" type="button">Reset</button><button class="btn btn-primary" value="save" type="submit">Save picture</button></div></form></dialog>
+    <footer class="footer"><span>WHO AM I? <span class="dim">An unofficial, non-commercial fan game</span></span><span>Character images belong to their respective owners. Links shown where available.</span></footer>
+  </main>
+  <script type="module" src="app.js"></script>
+</body>
+</html>
